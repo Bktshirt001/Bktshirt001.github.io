@@ -67,64 +67,145 @@
     revealElements.forEach((element) => revealObserver.observe(element));
   }
 
-  /* ---------- mobile drawer ---------- */
+  /* ---------- auto-slide sidebar / mobile drawer ---------- */
 
   const body = document.body;
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menu-toggle");
+  const navPeek = document.getElementById("nav-peek");
   const scrim = document.getElementById("drawer-scrim");
   const mobileQuery = window.matchMedia("(max-width: 1080px)");
+  const desktopQuery = window.matchMedia("(min-width: 1081px)");
   let lastFocusedElement = null;
+  let sidebarCloseTimer = 0;
 
-  const setDrawer = (open, restoreFocus = true) => {
-    if (!sidebar || !menuToggle) return;
+  const isSidebarOpen = () => Boolean(sidebar?.classList.contains("is-open"));
 
-    body.classList.toggle("nav-open", open);
-    sidebar.classList.toggle("is-open", open);
-    menuToggle.setAttribute("aria-expanded", String(open));
-    menuToggle.setAttribute("aria-label", open ? "关闭导航菜单" : "打开导航菜单");
+  const clearSidebarClose = () => {
+    window.clearTimeout(sidebarCloseTimer);
+    sidebarCloseTimer = 0;
+  };
+
+  const focusSidebarNav = () => {
+    const target = sidebar.querySelector(".nav-link.is-active") || sidebar.querySelector(".nav-link");
+    target?.focus({ preventScroll: true });
+  };
+
+  const setSidebar = (open, options = {}) => {
+    if (!sidebar) return;
+
+    const { restoreFocus = false, focusNav = false } = options;
+    clearSidebarClose();
 
     if (open) {
-      lastFocusedElement = document.activeElement;
-      window.setTimeout(() => {
-        const target = sidebar.querySelector(".nav-link.is-active") || sidebar.querySelector(".nav-link");
-        target?.focus({ preventScroll: true });
-      }, 220);
-    } else if (restoreFocus) {
-      const target = lastFocusedElement instanceof HTMLElement ? lastFocusedElement : menuToggle;
-      target.focus({ preventScroll: true });
+      if (!isSidebarOpen()) lastFocusedElement = document.activeElement;
+      sidebar.classList.add("is-open");
+      sidebar.inert = false;
+      navPeek?.classList.add("is-hidden");
+      navPeek?.setAttribute("aria-expanded", "true");
+      navPeek?.setAttribute("aria-label", "关闭导航菜单");
+
+      if (mobileQuery.matches) {
+        body.classList.add("nav-open");
+        menuToggle?.setAttribute("aria-expanded", "true");
+        menuToggle?.setAttribute("aria-label", "关闭导航菜单");
+      }
+
+      if (focusNav) {
+        window.setTimeout(focusSidebarNav, 240);
+      }
+      return;
     }
+
+    sidebar.classList.remove("is-open");
+    sidebar.inert = true;
+    navPeek?.classList.remove("is-hidden");
+    navPeek?.setAttribute("aria-expanded", "false");
+    navPeek?.setAttribute("aria-label", "打开导航菜单");
+    body.classList.remove("nav-open");
+    menuToggle?.setAttribute("aria-expanded", "false");
+    menuToggle?.setAttribute("aria-label", "打开导航菜单");
+
+    if (restoreFocus) {
+      const target = mobileQuery.matches ? menuToggle : navPeek;
+      window.setTimeout(() => target?.focus({ preventScroll: true }), 20);
+    }
+  };
+
+  const scheduleSidebarClose = (delay = 480) => {
+    if (!desktopQuery.matches) return;
+    clearSidebarClose();
+    sidebarCloseTimer = window.setTimeout(() => setSidebar(false), delay);
   };
 
   menuToggle?.addEventListener("click", () => {
-    setDrawer(!body.classList.contains("nav-open"));
-  });
-
-  scrim?.addEventListener("click", () => setDrawer(false));
-
-  sidebar?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      if (mobileQuery.matches) setDrawer(false, false);
+    setSidebar(!isSidebarOpen(), {
+      focusNav: !isSidebarOpen(),
+      restoreFocus: isSidebarOpen()
     });
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && body.classList.contains("nav-open")) {
-      setDrawer(false);
+  navPeek?.addEventListener("click", (event) => {
+    if (event.detail > 0 && isSidebarOpen()) return;
+    setSidebar(!isSidebarOpen(), {
+      focusNav: !isSidebarOpen(),
+      restoreFocus: isSidebarOpen()
+    });
+  });
+
+  scrim?.addEventListener("click", () => setSidebar(false));
+
+  sidebar?.addEventListener("pointerenter", clearSidebarClose);
+  sidebar?.addEventListener("pointerleave", (event) => {
+    if (desktopQuery.matches && event.pointerType !== "touch") {
+      scheduleSidebarClose(320);
     }
   });
 
-  const syncDrawerToViewport = () => {
-    if (!mobileQuery.matches && body.classList.contains("nav-open")) {
-      setDrawer(false, false);
+  document.addEventListener(
+    "pointermove",
+    (event) => {
+      if (!desktopQuery.matches || event.pointerType === "touch") return;
+
+      if (event.clientX <= 44) {
+        clearSidebarClose();
+        if (!isSidebarOpen()) setSidebar(true);
+        return;
+      }
+
+      if (isSidebarOpen() && sidebar) {
+        const rect = sidebar.getBoundingClientRect();
+        if (event.clientX > rect.right + 28) scheduleSidebarClose(380);
+      }
+    },
+    { passive: true }
+  );
+
+  document.addEventListener("mouseleave", () => {
+    if (desktopQuery.matches && isSidebarOpen()) scheduleSidebarClose(120);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isSidebarOpen()) {
+      setSidebar(false, { restoreFocus: true });
     }
+  });
+
+  sidebar?.addEventListener("focusin", () => {
+    if (desktopQuery.matches && !isSidebarOpen()) setSidebar(true);
+  });
+
+  const syncNavToViewport = () => {
+    if (isSidebarOpen()) setSidebar(false);
   };
 
   if (typeof mobileQuery.addEventListener === "function") {
-    mobileQuery.addEventListener("change", syncDrawerToViewport);
+    mobileQuery.addEventListener("change", syncNavToViewport);
   } else {
-    mobileQuery.addListener(syncDrawerToViewport);
+    mobileQuery.addListener(syncNavToViewport);
   }
+
+  setSidebar(false);
 
   /* ---------- active nav & scroll progress ---------- */
 
@@ -158,6 +239,12 @@
       activeLockTimer = window.setTimeout(() => {
         activeLock = false;
       }, 900);
+
+      if (mobileQuery.matches) {
+        setSidebar(false);
+      } else {
+        window.setTimeout(() => setSidebar(false), 180);
+      }
     });
   });
 
