@@ -67,6 +67,56 @@
     revealElements.forEach((element) => revealObserver.observe(element));
   }
 
+  /* ---------- code preview expander ---------- */
+
+  const codeWindow = document.querySelector(".code-window");
+  const codeScroll = document.getElementById("code-scroll");
+  const codeToggle = document.getElementById("code-toggle");
+  const codeToggleLabel = document.getElementById("code-toggle-label");
+  const codeHintText = document.getElementById("code-hint-text");
+  const codeScrollNote = document.getElementById("code-scroll-note");
+
+  const setCodeExpanded = (expanded) => {
+    if (!codeWindow || !codeScroll || !codeToggle) return;
+
+    codeWindow.classList.toggle("is-expanded", expanded);
+    codeToggle.setAttribute("aria-expanded", String(expanded));
+    codeToggle.setAttribute("aria-label", expanded ? "收起完整代码" : "展开完整代码");
+
+    if (codeToggleLabel) codeToggleLabel.textContent = expanded ? "收起代码" : "展开代码";
+    if (codeHintText) {
+      codeHintText.textContent = expanded
+        ? "滚动 / 拖动查看完整字符画"
+        : "预览模式 · 点击「展开代码」";
+    }
+    if (codeScrollNote) codeScrollNote.textContent = expanded ? "SCROLL ↕ ↔" : "PREVIEW";
+
+    codeScroll.tabIndex = expanded ? 0 : -1;
+    if (!expanded) {
+      codeScroll.scrollTop = 0;
+      codeScroll.scrollLeft = 0;
+    }
+  };
+
+  if (codeWindow && codeScroll && codeToggle) {
+    setCodeExpanded(false);
+
+    codeToggle.addEventListener("click", () => {
+      setCodeExpanded(!codeWindow.classList.contains("is-expanded"));
+    });
+
+    codeScroll.addEventListener("click", () => {
+      if (!codeWindow.classList.contains("is-expanded")) setCodeExpanded(true);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && codeWindow.classList.contains("is-expanded")) {
+        setCodeExpanded(false);
+        codeToggle.focus({ preventScroll: true });
+      }
+    });
+  }
+
   /* ---------- auto-slide sidebar / mobile drawer ---------- */
 
   const body = document.body;

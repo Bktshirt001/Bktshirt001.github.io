@@ -1,3 +1,6 @@
 # local preview artifacts
 .preview-*
 .og-raw.png
+
+# local requirements note
+剩余要求.md

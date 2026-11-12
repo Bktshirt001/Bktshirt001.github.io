@@ -1,6 +1,6 @@
 /* =========================================================
-   bk_tshirt · random anime-style BGM
-   Tracks are royalty-free / openly licensed (see README).
+   bk_tshirt · random personal anime playlist
+   Local playlist supplied by the site owner.
    ========================================================= */
 
 (() => {
@@ -8,25 +8,39 @@
 
   const TRACKS = [
     {
-      title: "Anime-esque Theme",
-      artist: "Cleyton Kauffman",
-      src: "assets/audio/anime-esque.mp3",
-      source: "https://opengameart.org/content/anime-esque-intro-outro-theme",
-      license: "CC0"
+      title: "光るなら",
+      artist: "Goose house",
+      src: "assets/audio/Goose house - 光るなら.mp3"
     },
     {
-      title: "Determination",
-      artist: "HydroGene",
-      src: "assets/audio/determination.mp3",
-      source: "https://opengameart.org/content/determination-anime-style-music",
-      license: "CC0"
+      title: "裏切りアリス",
+      artist: "M-ART、GUMI",
+      src: "assets/audio/M-ART、GUMI - 里切りアリス.mp3"
     },
     {
-      title: "Mauve Rhopalocera",
-      artist: "ISAo",
-      src: "assets/audio/mauve-rhopalocera.mp3",
-      source: "https://opengameart.org/content/fantastic-japanese-style-shoot-em-up-game-music",
-      license: "OGA-BY 3.0"
+      title: "華色の青春",
+      artist: "うたたね歌菜",
+      src: "assets/audio/うたたね歌菜 - 华色の青春.mp3"
+    },
+    {
+      title: "つよがるガール",
+      artist: "ぼっちぼろまる、もっさ",
+      src: "assets/audio/ぼっちぼろまる、もっさ - つよがるガール.mp3"
+    },
+    {
+      title: "feel my soul",
+      artist: "寺澤百花",
+      src: "assets/audio/寺泽百花 - feel my soul.mp3"
+    },
+    {
+      title: "标题.爱丽丝",
+      artist: "草莓酱紫",
+      src: "assets/audio/草莓酱紫 - 标题.爱丽丝 (DJ长音频).mp3"
+    },
+    {
+      title: "楽園の扉",
+      artist: "青葉りんご",
+      src: "assets/audio/青叶りんご - 楽园の扉.mp3"
     }
   ];
 
@@ -35,7 +49,6 @@
   const toggle = document.getElementById("music-toggle");
   const title = document.getElementById("music-title");
   const kicker = document.getElementById("music-kicker");
-  const credit = document.getElementById("music-credit");
 
   if (!player || !audio || !toggle || !title || !kicker) return;
 
@@ -119,14 +132,8 @@
   };
 
   audio.src = track.src;
-  audio.preload = "auto";
+  audio.preload = "metadata";
   audio.volume = 0;
-
-  if (credit) {
-    credit.href = track.source;
-    credit.title = `${track.title} / ${track.artist} · ${track.license}`;
-    credit.setAttribute("aria-label", `查看音乐来源：${track.title}，${track.artist}，${track.license}`);
-  }
 
   title.textContent = `${track.title} · ${track.artist}`;
   setState("loading");
