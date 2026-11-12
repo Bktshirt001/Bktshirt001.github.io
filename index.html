@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7d9c4">
+  <meta name="color-scheme" content="light">
+  <title>你好呀_^v^_</title>
+  <script>document.documentElement.classList.add("js");</script>
+  <meta name="description" content="bk_tshirt 的个人小站——在代码与二次元之间，收集光、故事和一点点浪漫。">
+  <meta name="author" content="bk_tshirt">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="bk_tshirt 的小世界">
+  <meta property="og:description" content="在代码与二次元之间，收集光、故事和一点点浪漫。">
+  <meta property="og:url" content="https://bktshirt001.github.io/">
+  <meta property="og:image" content="https://bktshirt001.github.io/assets/images/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://bktshirt001.github.io/assets/images/og-cover.jpg">
+  <link rel="canonical" href="https://bktshirt001.github.io/">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <noscript>
+    <style>
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .repo-skeleton { display: none !important; }
+      #particle-canvas { display: none !important; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <!-- 全屏动态背景 -->
+  <div class="site-bg" aria-hidden="true">
+    <picture>
+      <source media="(max-width: 760px)" srcset="assets/images/bg-atri-mobile.jpg">
+      <img src="assets/images/bg-atri.jpg" alt="">
+    </picture>
+    <div class="site-bg__veil"></div>
+    <div class="site-bg__grain"></div>
+  </div>
+
+  <!-- 鼠标粒子画布 -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+  <div class="ambient-shapes" aria-hidden="true">
+    <span class="shape shape--flower">✿</span>
+    <span class="shape shape--ring"></span>
+    <span class="shape shape--petal"></span>
+    <span class="shape shape--dot"></span>
+  </div>
+
+  <!-- SVG 图标库 -->
+  <svg class="svg-sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="3.6"/><path d="M5.5 20c.8-3.4 3.3-5.2 6.5-5.2s5.7 1.8 6.5 5.2"/>
+      </symbol>
+      <symbol id="i-github" viewBox="0 0 24 24">
+        <path d="M9 19c-4.3 1.3-4.3-2.1-6-2.6m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.7 11.7 0 0 0-6.2 0C6.6 3.2 5.6 3.5 5.6 3.5a4.3 4.3 0 0 0-.1 3.2 4.6 4.6 0 0 0-1.3 3.2c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/>
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 24 24">
+        <path d="m3 9 9-5 9 5-9 5-9-5Z"/><path d="M6 11v5.5c2.7 2 9.3 2 12 0V11M21 9v6"/>
+      </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24">
+        <path d="M20.4 5.6a5 5 0 0 0-7.1 0L12 6.9l-1.3-1.3a5 5 0 0 0-7.1 7.1L12 21l8.4-8.3a5 5 0 0 0 0-7.1Z"/>
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14m-5-5 5 5-5 5"/>
+      </symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24">
+        <path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 9a7 7 0 0 1 11.6-2L20 12M4 12l2.3 5a7 7 0 0 0 11.6-2"/>
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>
+      </symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24">
+        <circle cx="6" cy="5" r="2"/><circle cx="18" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M6 7v2c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7M12 11v6"/>
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m8.5 7-5 5 5 5M15.5 7l5 5-5 5M13.5 4l-3 16"/>
+      </symbol>
+      <symbol id="i-sparkle" viewBox="0 0 24 24">
+        <path d="M12 2.8c.6 4.7 2.5 6.6 7.2 7.2-4.7.6-6.6 2.5-7.2 7.2-.6-4.7-2.5-6.6-7.2-7.2 4.7-.6 6.6-2.5 7.2-7.2Z"/>
+        <path d="M19 16.2c.2 1.5.8 2.1 2.3 2.3-1.5.2-2.1.8-2.3 2.3-.2-1.5-.8-2.1-2.3-2.3 1.5-.2 2.1-.8 2.3-2.3Z"/>
+      </symbol>
+      <symbol id="i-palette" viewBox="0 0 24 24">
+        <path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-.8 2-1.8 0-.8-.4-1.2-.4-2 0-1 .7-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.4 17 3 12 3Z"/>
+        <circle cx="7.5" cy="10" r=".8"/><circle cx="10" cy="6.8" r=".8"/><circle cx="14.5" cy="6.8" r=".8"/><circle cx="17.4" cy="10.2" r=".8"/>
+      </symbol>
+      <symbol id="i-headphone" viewBox="0 0 24 24">
+        <path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="7" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/>
+      </symbol>
+      <symbol id="i-compass" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24">
+        <path d="M5 8h14M5 12h14M5 16h9"/>
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18"/>
+      </symbol>
+      <symbol id="i-up" viewBox="0 0 24 24">
+        <path d="M12 19V5m-6 6 6-6 6 6"/>
+      </symbol>
+      <symbol id="i-flower" viewBox="0 0 32 32">
+        <path d="M16 13.5c-1.8-3.1-1.6-6.5.7-8 2.4 1.3 2.9 4.4 1.5 7.8 3.3-1.2 6.5-.4 7.5 2.1-1.7 2.2-4.8 2.2-7.9.3 1.7 3.2 1.2 6.2-1.2 7.4-2.3-1.4-2.9-4.5-1.6-7.8-3.2 1.5-6.2.9-7.3-1.6 1.6-2.2 4.7-2.4 8.3-.2Z"/>
+        <circle cx="16" cy="16" r="2.2"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-bar"></span></div>
+
+  <!-- 手机端顶栏 -->
+  <header class="mobile-bar">
+    <a class="mobile-brand" href="#home" aria-label="回到首页">
+      <span class="brand-flower"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+      <span class="mobile-brand__text">bk_tshirt<small>的小世界</small></span>
+    </a>
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="打开导航菜单">
+      <svg class="icon menu-icon" viewBox="0 0 24 24"><use href="#i-menu"/></svg>
+      <svg class="icon close-icon" viewBox="0 0 24 24"><use href="#i-close"/></svg>
+    </button>
+  </header>
+  <div class="drawer-scrim" id="drawer-scrim" aria-hidden="true"></div>
+
+  <!-- 左侧导航 -->
+  <aside class="sidebar" id="sidebar" aria-label="主导航">
+    <div class="sidebar-top">
+      <p class="side-kicker"><span class="status-dot"></span> WELCOME TO MY ROOM</p>
+
+      <div class="avatar-wrap">
+        <span class="avatar-orbit" aria-hidden="true"></span>
+        <span class="avatar-glow" aria-hidden="true"></span>
+        <img class="avatar"
+             src="https://avatars.githubusercontent.com/u/300708560?v=4&s=400"
+             data-fallback="assets/images/avatar-github.png"
+             width="400" height="400"
+             alt="bk_tshirt 的 GitHub 头像">
+        <span class="avatar-badge" title="GitHub 在线">G</span>
+      </div>
+
+      <p class="side-hello">你好呀，我是</p>
+      <p class="side-name">bk_tshirt</p>
+      <p class="side-bio">代码 / 二次元 / 好奇心</p>
+      <p class="side-note">在喜欢的世界里，慢慢变成更厉害的人。</p>
+    </div>
+
+    <nav class="side-nav" aria-label="页面章节">
+      <p class="nav-label">NAVIGATION</p>
+      <a class="nav-link is-active" href="#about" data-section="about">
+        <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-user"/></svg></span>
+        <span class="nav-text"><b>自我介绍</b><small>About me</small></span>
+        <span class="nav-arrow">→</span>
+      </a>
+      <a class="nav-link" href="#github" data-section="github">
+        <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-github"/></svg></span>
+        <span class="nav-text"><b>GitHub 仓库</b><small>My repositories</small></span>
+        <span class="nav-arrow">→</span>
+      </a>
+      <a class="nav-link" href="#university" data-section="university">
+        <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-school"/></svg></span>
+        <span class="nav-text"><b>在读大学</b><small>Campus life</small></span>
+        <span class="nav-arrow">→</span>
+      </a>
+      <a class="nav-link" href="#hobbies" data-section="hobbies">
+        <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-heart"/></svg></span>
+        <span class="nav-text"><b>个人爱好</b><small>Things I love</small></span>
+        <span class="nav-arrow">→</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="side-quote">
+        <svg class="quote-flower" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-flower"/></svg>
+        <p>less is more.</p>
+        <span>— my way of living</span>
+      </div>
+      <a class="side-github" href="https://github.com/Bktshirt001" target="_blank" rel="noopener noreferrer">
+        <svg class="icon" viewBox="0 0 24 24"><use href="#i-github"/></svg>
+        <span>github.com/Bktshirt001</span>
+        <svg class="icon side-github__arrow" viewBox="0 0 24 24"><use href="#i-arrow"/></svg>
+      </a>
+      <p class="side-copy">© 2026 bk_tshirt · Made with ♥</p>
+    </div>
+  </aside>
+
+  <main id="main" class="main" tabindex="-1">
+    <div class="content">
+      <!-- 首屏 -->
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="hero-eyebrow reveal">
+            <span class="eyebrow-line"></span>
+            HELLO, WORLD
+            <span class="eyebrow-jp">はじめまして</span>
+          </p>
+
+          <h1 class="hero-title" id="hero-title">
+            <span class="sr-only">把喜欢的事，写成发光的代码</span>
+            <span class="title-line" aria-hidden="true"><span class="split-text">把喜欢的事</span></span>
+            <span class="title-line" aria-hidden="true"><span class="split-text accent-text">写成发光的代码</span></span>
+            <span class="title-underline" aria-hidden="true"></span>
+          </h1>
+
+          <p class="hero-sub reveal" data-delay="180">
+            在代码与二次元之间，收集光、故事和一点点浪漫。
+          </p>
+          <p class="hero-desc reveal" data-delay="260">
+            <!-- ✏️ 自我介绍 01｜首屏简介，可按你的真实情况替换 -->
+            你好呀，我是 <strong>bk_tshirt</strong>。一个在屏幕前敲敲打打、在故事里寻找温柔的普通学生。喜欢把脑海里的奇思妙想，一点一点做成能运行、能被看见的东西。
+          </p>
+
+          <div class="hero-actions reveal" data-delay="340">
+            <a class="btn btn--primary" href="#about">
+              <span>认识我一下</span>
+              <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow"/></svg>
+            </a>
+            <a class="btn btn--ghost" href="https://github.com/Bktshirt001" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" viewBox="0 0 24 24"><use href="#i-github"/></svg>
+              <span>逛逛 GitHub</span>
+            </a>
+          </div>
+
+          <ul class="hero-tags reveal" data-delay="420">
+            <li class="tag"><i class="tag-dot tag-dot--peach"></i> 学生 / Student</li>
+            <li class="tag"><i class="tag-dot tag-dot--rose"></i> 代码练习生</li>
+            <li class="tag"><i class="tag-dot tag-dot--amber"></i> 二次元住民</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual reveal" data-delay="300">
+          <div class="visual-halo" aria-hidden="true"></div>
+          <div class="terminal-card">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="terminal-file">~/about-me.js</span>
+              <span class="terminal-live"><i></i> live</span>
+            </div>
+            <pre class="terminal-code"><code><span class="tk-key">const</span> <span class="tk-var">me</span> = {
+  <span class="tk-prop">name</span>: <span class="tk-str">"bk_tshirt"</span>,
+  <span class="tk-prop">motto</span>: <span class="tk-str">"less is more"</span>,
+  <span class="tk-prop">loves</span>: [<span class="tk-str">"code"</span>, <span class="tk-str">"anime"</span>, <span class="tk-str">"music"</span>],
+  <span class="tk-prop">status</span>: <span class="tk-str">"still learning..."</span>,
+  <span class="tk-prop">home</span>: <span class="tk-str">"github.com/Bktshirt001"</span>
+};</code></pre>
+            <div class="terminal-footer">
+              <span><i class="terminal-pulse"></i> open to new things</span>
+              <span class="terminal-cursor" aria-hidden="true">_</span>
+            </div>
+          </div>
+
+          <div class="floating-chip floating-chip--atri" aria-hidden="true">
+            <span class="chip-label">FAVORITE</span>
+            <span class="chip-value">ATRI</span>
+            <small>-My Dear Moments-</small>
+          </div>
+          <div class="floating-chip floating-chip--hello" aria-hidden="true">
+            <span class="hello-face">^v^</span>
+            <span>nice to meet you</span>
+          </div>
+          <div class="visual-stamp" aria-hidden="true">
+            <svg viewBox="0 0 100 100">
+              <defs><path id="stamp-circle" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0"/></defs>
+              <text><textPath href="#stamp-circle">BK TSHIRT · SINCE 2026 · BK TSHIRT · </textPath></text>
+            </svg>
+            <svg class="stamp-flower" viewBox="0 0 32 32"><use href="#i-flower"/></svg>
+          </div>
+        </div>
+
+        <a class="scroll-hint" href="#about" aria-label="向下滚动到自我介绍">
+          <span class="scroll-mouse"><i></i></span>
+          <span>scroll to explore</span>
+        </a>
+      </section>
+
+      <!-- 滚动文字带 -->
+      <div class="marquee reveal" aria-hidden="true">
+        <div class="marquee-track">
+          <span>CODE</span><i>✿</i><span>ANIME</span><i>✿</i><span>MUSIC</span><i>✿</i><span>CURIOSITY</span><i>✿</i><span>LESS IS MORE</span><i>✿</i><span>DREAM BIG</span><i>✿</i>
+          <span>CODE</span><i>✿</i><span>ANIME</span><i>✿</i><span>MUSIC</span><i>✿</i><span>CURIOSITY</span><i>✿</i><span>LESS IS MORE</span><i>✿</i><span>DREAM BIG</span><i>✿</i>
+        </div>
+      </div>
+
+      <!-- 01 自我介绍 -->
+      <section class="section" id="about" aria-labelledby="about-title">
+        <div class="section-head reveal">
+          <span class="section-index">01</span>
+          <div class="section-heading">
+            <p class="section-kicker">ABOUT ME <span>·</span> わたしについて</p>
+            <h2 id="about-title">关于我</h2>
+          </div>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-flower" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+        </div>
+
+        <div class="about-grid">
+          <article class="glass about-story reveal">
+            <span class="card-corner" aria-hidden="true">✿</span>
+            <p class="about-jp">はじめまして、<span>bk_tshirt</span> です。</p>
+            <!-- ✏️ 自我介绍 02｜正文第一段，可替换成你的故事 -->
+            <p class="about-lead">
+              你好，我是 <strong>bk_tshirt</strong>。一个把好奇心当作导航的普通学生，正在学习如何把「喜欢」变成一件件真实的作品。
+            </p>
+            <!-- ✏️ 自我介绍 03｜正文第二段，可替换成你的经历、方向或目标 -->
+            <p>
+              我喜欢在安静的时候写一点代码，也喜欢在二次元的故事里寻找柔软的光。对我来说，编程不只是屏幕上的字符，它更像一种魔法——把脑中的想象，变成别人也能触碰到的世界。
+            </p>
+            <!-- ✏️ 自我介绍 04｜正文第三段，可替换成此刻的状态与展望 -->
+            <p>
+              现在的我还在路上，慢慢学习、慢慢尝试，也慢慢靠近那个更厉害的自己。希望这个小站，能成为我们认识彼此的第一束光。
+            </p>
+            <div class="about-signature">
+              <span class="signature-script">less is more.</span>
+              <span class="signature-line"></span>
+              <span class="signature-caption">简单、真诚，然后一直向前。</span>
+            </div>
+          </article>
+
+          <div class="about-mini-grid">
+            <article class="glass mini-card mini-card--code reveal" data-delay="80">
+              <span class="mini-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-code"/></svg></span>
+              <span class="mini-index">01</span>
+              <h3>正在做的事</h3>
+              <p>学习编程、搭建网站，把喜欢的东西一点点做成作品。</p>
+            </article>
+            <article class="glass mini-card mini-card--ideas reveal" data-delay="160">
+              <span class="mini-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-sparkle"/></svg></span>
+              <span class="mini-index">02</span>
+              <h3>相信的事</h3>
+              <p>less is more。简单、真诚，比华丽更有力量。</p>
+            </article>
+            <article class="glass mini-card mini-card--wish reveal" data-delay="240">
+              <span class="mini-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-heart"/></svg></span>
+              <span class="mini-index">03</span>
+              <h3>此刻的愿望</h3>
+              <p>做出一个让自己也会觉得「有点厉害」的东西。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 GitHub 仓库 -->
+      <section class="section" id="github" aria-labelledby="github-title">
+        <div class="section-head reveal">
+          <span class="section-index">02</span>
+          <div class="section-heading">
+            <p class="section-kicker">MY REPOSITORIES <span>·</span> コードの足跡</p>
+            <h2 id="github-title">GitHub 仓库</h2>
+          </div>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-flower" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+        </div>
+
+        <div class="glass github-panel reveal">
+          <div class="gh-head">
+            <div class="gh-identity">
+              <span class="gh-avatar-wrap">
+                <img class="gh-avatar"
+                     src="https://avatars.githubusercontent.com/u/300708560?v=4&s=200"
+                     data-fallback="assets/images/avatar-github.png"
+                     width="200" height="200" alt="bk_tshirt 的 GitHub 头像">
+                <span class="gh-avatar__dot" title="GitHub 公开主页"></span>
+              </span>
+              <div class="gh-name">
+                <div class="gh-name-row">
+                  <h3>bk_tshirt</h3>
+                  <span class="live-pill" id="gh-live-pill" data-state="loading"><i></i><span>CONNECTING</span></span>
+                </div>
+                <p><span id="gh-login">@Bktshirt001</span> · <span id="gh-bio">less is more</span></p>
+              </div>
+            </div>
+            <div class="gh-actions">
+              <span class="api-status" id="api-status" data-state="loading" aria-live="polite"><i></i><span>连接 GitHub…</span></span>
+              <button class="refresh-btn" id="gh-refresh" type="button" aria-label="立即刷新 GitHub 数据">
+                <svg class="icon" viewBox="0 0 24 24"><use href="#i-refresh"/></svg>
+                <span>刷新</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="gh-stats" role="group" aria-label="GitHub 数据概览">
+            <div class="gh-stat">
+              <span class="gh-stat__icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-github"/></svg></span>
+              <div><strong id="stat-repos">--</strong><span>公开仓库</span></div>
+            </div>
+            <div class="gh-stat">
+              <span class="gh-stat__icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+              <div><strong id="stat-stars">--</strong><span>收获 Star</span></div>
+            </div>
+            <div class="gh-stat">
+              <span class="gh-stat__icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-heart"/></svg></span>
+              <div><strong id="stat-followers">--</strong><span>关注者</span></div>
+            </div>
+            <div class="gh-stat gh-stat--api">
+              <span class="gh-stat__icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-sparkle"/></svg></span>
+              <div><strong id="stat-rate">--</strong><span>API 剩余额度</span></div>
+            </div>
+          </div>
+
+          <div class="sync-block">
+            <div class="sync-copy">
+              <span class="sync-title"><i class="sync-pulse"></i> 自动同步进度</span>
+              <span class="sync-meta"><span id="sync-last">等待首次同步</span><span class="sync-sep">·</span><span id="sync-countdown">--:--</span> 后刷新</span>
+            </div>
+            <progress class="sync-track" id="sync-track" max="100" value="0" aria-label="距离下次自动同步"></progress>
+          </div>
+
+          <div class="repo-grid" id="repo-grid" aria-live="polite" aria-busy="true">
+            <div class="repo-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="repo-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="repo-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="repo-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <noscript><div class="repo-error">启用 JavaScript 后，这里会自动同步 GitHub 仓库信息。</div></noscript>
+          </div>
+
+          <div class="gh-foot">
+            <p>
+              <svg class="icon" viewBox="0 0 24 24"><use href="#i-sparkle"/></svg>
+              数据来自 GitHub REST API，每 5 分钟自动更新一次；仓库信息与头像均实时读取。
+            </p>
+            <a href="https://github.com/Bktshirt001?tab=repositories" target="_blank" rel="noopener noreferrer">
+              查看全部仓库
+              <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 在读大学 -->
+      <section class="section" id="university" aria-labelledby="university-title">
+        <div class="section-head reveal">
+          <span class="section-index">03</span>
+          <div class="section-heading">
+            <p class="section-kicker">CAMPUS LIFE <span>·</span> キャンパスライフ</p>
+            <h2 id="university-title">在读大学</h2>
+          </div>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-flower" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+        </div>
+
+        <div class="campus-grid">
+          <article class="glass campus-card reveal">
+            <div class="campus-top">
+              <span class="campus-status"><i></i> 内容待补充</span>
+              <span class="campus-jp">まだ書きかけのページ。</span>
+            </div>
+            <h3>这一页，还在慢慢书写。</h3>
+            <p class="campus-copy">
+              <!-- ✏️ 学校介绍 01｜学校、专业、年级和校园故事，待你补充 -->
+              大学的故事还在发生，所以这里暂时留白。等我把这段日子整理好，再把学校、专业和那些值得记住的瞬间，一起写进这里。
+            </p>
+            <dl class="campus-info">
+              <div><dt>学校</dt><dd>待补充</dd></div>
+              <div><dt>专业</dt><dd>待补充</dd></div>
+              <div><dt>年级</dt><dd>待补充</dd></div>
+            </dl>
+            <div class="campus-note">
+              <span class="note-pin"><svg class="icon" viewBox="0 0 24 24"><use href="#i-sparkle"/></svg></span>
+              <!-- ✏️ 学校介绍 02｜一句校园生活格言或近况 -->
+              <p>「先好好生活，再慢慢发光。」</p>
+            </div>
+          </article>
+
+          <aside class="glass campus-side reveal" data-delay="120" aria-labelledby="campus-diary-title">
+            <div class="campus-orb" aria-hidden="true">
+              <span class="orb-ring orb-ring--1"></span>
+              <span class="orb-ring orb-ring--2"></span>
+              <span class="orb-core"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+            </div>
+            <p class="campus-side__label">STUDENT DIARY</p>
+            <h3 id="campus-diary-title">202X — Now</h3>
+            <p>在课堂、图书馆与深夜的屏幕之间，寻找自己的节奏。</p>
+            <div class="campus-side__tags">
+              <span># 校园生活</span>
+              <span># 成长中</span>
+              <span># 未完成</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- 04 个人爱好 -->
+      <section class="section section--hobbies" id="hobbies" aria-labelledby="hobbies-title">
+        <div class="section-head reveal">
+          <span class="section-index">04</span>
+          <div class="section-heading">
+            <p class="section-kicker">THINGS I LOVE <span>·</span> すきなこと</p>
+            <h2 id="hobbies-title">个人爱好</h2>
+          </div>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-flower" aria-hidden="true"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+        </div>
+
+        <p class="hobbies-intro reveal">
+          把时间花在喜欢的事情上，就不算浪费。
+          <span>这些小事，组成了我生活里的大部分光。</span>
+        </p>
+
+        <div class="hobby-grid">
+          <article class="glass hobby-card hobby-card--code reveal">
+            <div class="hobby-head">
+              <span class="hobby-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-code"/></svg></span>
+              <span class="hobby-number">01</span>
+            </div>
+            <p class="hobby-en">CODE</p>
+            <h3>代码与构建</h3>
+            <p>把想法跑起来，哪怕只是一个很小很小的页面。</p>
+            <span class="hobby-tag">Rust / Python / Web</span>
+          </article>
+
+          <article class="glass hobby-card hobby-card--anime reveal" data-delay="80">
+            <div class="hobby-head">
+              <span class="hobby-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-palette"/></svg></span>
+              <span class="hobby-number">02</span>
+            </div>
+            <p class="hobby-en">ANIME</p>
+            <h3>二次元</h3>
+            <p>故事、角色，以及那些让人心头一软的瞬间。</p>
+            <span class="hobby-tag">ATRI / 动画 / 漫画</span>
+          </article>
+
+          <article class="glass hobby-card hobby-card--music reveal" data-delay="160">
+            <div class="hobby-head">
+              <span class="hobby-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-headphone"/></svg></span>
+              <span class="hobby-number">03</span>
+            </div>
+            <p class="hobby-en">MUSIC</p>
+            <h3>音乐</h3>
+            <p>戴上耳机，世界就只剩下旋律和眼前的代码。</p>
+            <span class="hobby-tag">轻音乐 / 循环播放</span>
+          </article>
+
+          <article class="glass hobby-card hobby-card--curiosity reveal" data-delay="240">
+            <div class="hobby-head">
+              <span class="hobby-icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-compass"/></svg></span>
+              <span class="hobby-number">04</span>
+            </div>
+            <p class="hobby-en">CURIOSITY</p>
+            <h3>好奇心</h3>
+            <p>新工具、新知识、新故事，都想去碰一碰。</p>
+            <span class="hobby-tag">不断尝试 / 永远好奇</span>
+          </article>
+        </div>
+
+        <div class="now-playing reveal">
+          <span class="now-playing__icon"><svg class="icon" viewBox="0 0 24 24"><use href="#i-headphone"/></svg></span>
+          <div class="now-playing__copy">
+            <span class="now-playing__label">NOW PLAYING IN MY HEAD</span>
+            <p>「把今天写进代码，把明天留给故事。」</p>
+          </div>
+          <div class="equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </section>
+
+      <!-- 页脚 -->
+      <footer class="footer reveal">
+        <div class="footer-glow" aria-hidden="true"></div>
+        <div class="footer-main">
+          <div class="footer-copy">
+            <span class="footer-flower"><svg viewBox="0 0 32 32"><use href="#i-flower"/></svg></span>
+            <p class="footer-jp">ここまで来てくれて、ありがとう。</p>
+            <h2>谢谢你来过我的小世界。</h2>
+            <p>愿你在代码与星光之间，也能找到属于自己的温柔。</p>
+          </div>
+          <div class="footer-actions">
+            <a class="btn btn--primary" href="https://github.com/Bktshirt001" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" viewBox="0 0 24 24"><use href="#i-github"/></svg>
+              <span>在 GitHub 找到我</span>
+            </a>
+            <a class="btn btn--ghost" href="#home">
+              <svg class="icon" viewBox="0 0 24 24"><use href="#i-up"/></svg>
+              <span>回到顶部</span>
+            </a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 bk_tshirt · All rights reserved.</p>
+          <p class="footer-made">Made with <span>♥</span> and a little magic.</p>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部">
+    <svg class="icon" viewBox="0 0 24 24"><use href="#i-up"/></svg>
+  </button>
+
+  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/github.js" defer></script>
+</body>
+</html>

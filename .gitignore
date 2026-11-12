@@ -1,0 +1,3 @@
+# local preview artifacts
+.preview-*
+.og-raw.png
