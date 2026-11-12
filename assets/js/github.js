@@ -188,7 +188,7 @@
         live: "LIVE",
         cached: "CACHE",
         loading: "CONNECTING",
-        error: "OFFLINE"
+        error: "LOCAL"
       }[kind] || "GITHUB";
       if (pillLabel) pillLabel.textContent = pillText;
     }
@@ -253,6 +253,16 @@
     }
   };
 
+  const updateRateLabel = () => {
+    if (!ui.rate) return;
+    ui.rate.textContent =
+      state.rateRemaining === null
+        ? "--"
+        : state.rateRemaining <= 0
+          ? "限流"
+          : `${state.rateRemaining}/60`;
+  };
+
   const renderProfile = (profile) => {
     state.profile = profile;
 
@@ -266,10 +276,6 @@
     animateNumber(ui.repos, repoCount);
     animateNumber(ui.stars, starCount);
     animateNumber(ui.followers, followers);
-
-    if (ui.rate) {
-      ui.rate.textContent = state.rateRemaining === null ? "--" : `${state.rateRemaining}/60`;
-    }
   };
 
   const renderRepos = (repos) => {
@@ -333,10 +339,7 @@
     renderRepos(repos);
     if (profile) renderProfile(profile);
 
-    if (ui.rate) {
-      ui.rate.textContent = state.rateRemaining === null ? "--" : `${state.rateRemaining}/60`;
-    }
-
+    updateRateLabel();
     updateSyncCopy();
   };
 
@@ -388,7 +391,7 @@
       source === "stale"
         ? `缓存于 ${relativeTime(new Date(savedAt).toISOString())}`
         : source === "fallback"
-          ? "离线示例 · 等待 API 恢复"
+          ? "本地记录 · 自动重试中"
           : "";
 
     renderAll(profile, repos);
@@ -429,17 +432,14 @@
       ]);
 
       commit(profile, repos, "live", Date.now());
-
-      if (ui.rate) {
-        ui.rate.textContent = state.rateRemaining === null ? "--" : `${state.rateRemaining}/60`;
-      }
+      updateRateLabel();
     } catch (error) {
       if (cached) {
         commit(cached.profile, cached.repos, "stale", cached.savedAt);
-        setStatus("error", error.status === 403 ? "API 限流 · 显示缓存" : "连接失败 · 显示缓存");
+        setStatus("error", error.status === 403 ? "API 限流 · 缓存数据" : "连接失败 · 缓存数据");
       } else {
         commit(fallbackProfile, fallbackRepos, "fallback", Date.now());
-        setStatus("error", error.status === 403 ? "API 限流 · 离线展示" : "连接失败 · 离线展示");
+        setStatus("error", error.status === 403 ? "API 限流 · 本地数据" : "连接失败 · 本地数据");
       }
     } finally {
       setLoading(false);
